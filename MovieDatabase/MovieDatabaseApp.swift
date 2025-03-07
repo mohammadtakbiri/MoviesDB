@@ -10,23 +10,31 @@ import SwiftData
 
 @main
 struct MovieDatabaseApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
+    let container: ModelContainer
+    
+    init() {
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            container = try ModelContainer(for: FavoriteMovie.self)
+            FavoritesManager.shared.initialize(with: container.mainContext)
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            fatalError("Failed to initialize SwiftData: \(error)")
         }
-    }()
-
+    }
+    
     var body: some Scene {
         WindowGroup {
-            MovieListsView()
+            TabView {
+                MovieListsView()
+                    .tabItem {
+                        Label("Movies", systemImage: "film")
+                    }
+                
+                FavoriteMoviesView()
+                    .tabItem {
+                        Label("Favorites", systemImage: "heart.fill")
+                    }
+            }
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(container)
     }
 }

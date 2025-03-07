@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "an-app-icon-for-an-movie-database-application-with.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -12,6 +13,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "an-app-icon-for-an-movie-database-application-with 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -23,6 +25,7 @@
           "value" : "tinted"
         }
       ],
+      "filename" : "an-app-icon-for-an-movie-database-application-with 2.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

@@ -10,8 +10,8 @@ import SDWebImageSwiftUI
 
 struct MovieDetailView: View {
     let movie: Movie
-    @State private var isFavorite = false
     @State private var showFullDescription = false
+    @StateObject private var favoritesManager = FavoritesManager.shared
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -64,13 +64,13 @@ struct MovieDetailView: View {
                         
                         Button(action: {
                             withAnimation(.spring()) {
-                                isFavorite.toggle()
+                                favoritesManager.toggleFavorite(for: movie)
                             }
                         }) {
-                            Image(systemName: isFavorite ? "heart.fill" : "heart")
+                            Image(systemName: favoritesManager.isFavorite(movieId: movie.id) ? "heart.fill" : "heart")
                                 .font(.title2)
-                                .foregroundColor(isFavorite ? .red : .gray)
-                                .scaleEffect(isFavorite ? 1.1 : 1.0)
+                                .foregroundColor(favoritesManager.isFavorite(movieId: movie.id) ? .red : .gray)
+                                .scaleEffect(favoritesManager.isFavorite(movieId: movie.id) ? 1.1 : 1.0)
                         }
                     }
                     
@@ -125,11 +125,11 @@ struct MovieDetailView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     withAnimation(.spring()) {
-                        isFavorite.toggle()
+                        favoritesManager.toggleFavorite(for: movie)
                     }
                 }) {
-                    Image(systemName: isFavorite ? "heart.fill" : "heart")
-                        .foregroundColor(isFavorite ? .red : .gray)
+                    Image(systemName: favoritesManager.isFavorite(movieId: movie.id) ? "heart.fill" : "heart")
+                        .foregroundColor(favoritesManager.isFavorite(movieId: movie.id) ? .red : .gray)
                 }
             }
         }
@@ -140,11 +140,11 @@ struct MovieDetailView: View {
     NavigationView {
         MovieDetailView(movie: Movie(
             id: 1,
-            posterURL: URL(string: "https://example.com/poster.jpg")!,
+            posterURL: URL(string: "https://mohta.com/test.jpg")!,
             title: "Sample Movie",
             releaseDate: "2024-03-07",
             rating: 8.5,
-            description: "This is a sample movie description that is long enough to demonstrate the read more functionality. It contains multiple lines of text to show how the text wrapping and expansion works in the detail view."
+            description: "Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum...Lore impsum..."
         ))
     }
 }

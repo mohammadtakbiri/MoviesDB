@@ -7,11 +7,13 @@
 
 import Foundation
 
-struct AppError {
+struct AppError: LocalizedError, Identifiable {
     let message: String?
     let fReason: String?
     let statusCode: Int?
     var json: [String: Any]? = nil
+    
+    var id: String { UUID().uuidString }
 
     init(message: String?, failureReason: String = "", statusCode: Int? = nil, json: [String: Any]? = nil) {
         self.message = message ?? ""
@@ -21,7 +23,7 @@ struct AppError {
     }
 }
 
-extension AppError: LocalizedError {
+extension AppError {
     var errorDescription: String? { return message }
     var failureReason: String? { return fReason }
 }

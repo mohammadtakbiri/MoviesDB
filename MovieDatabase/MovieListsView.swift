@@ -58,59 +58,16 @@ struct MovieListsView: View {
         .task {
             await viewModel.fetchMovies(resetPages: true)
         }
-    }
-}
-
-struct MovieItemView: View {
-    let movie: Movie
-    @State private var isFavorite = false
-    @State private var isAppeared = false
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            // Movie Poster
-            WebImage(url: movie.posterURL) { image in
-                image.resizable()
-            } placeholder: {
-                Rectangle()
-                    .foregroundColor(.gray.opacity(0.3))
-            }
-            .indicator(.activity)
-            .transition(.fade(duration: 0.5))
-            .scaledToFit()
-            .frame(width: 80, height: 120)
-            .cornerRadius(8)
-            
-            // Movie Info
-            VStack(alignment: .leading, spacing: 8) {
-                Text(movie.title)
-                    .font(.headline)
-                    .foregroundColor(.white)
-                
-                Text(movie.releaseDate)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-            }
-            
-            Spacer()
-            
-            // Favorite Button
-            Button(action: {
-                isFavorite.toggle()
-            }) {
-                Image(systemName: isFavorite ? "heart.fill" : "heart")
-                    .foregroundColor(isFavorite ? .red : .gray)
-                    .font(.title2)
-            }
-        }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
-        .opacity(isAppeared ? 1 : 0)
-        .onAppear {
-            withAnimation(.easeIn(duration: 0.5)) {
-                isAppeared = true
-            }
+        .alert(item: $viewModel.error) { error in
+            Alert(
+                title: Text("Oops!"),
+                message: Text(error.message ?? "Bad error!"),
+                dismissButton: .default(Text("Retry!")) {
+                    Task {
+                        await viewModel.fetchMovies(resetPages: true)
+                    }
+                }
+            )
         }
     }
 }

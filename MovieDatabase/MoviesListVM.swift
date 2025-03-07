@@ -12,6 +12,7 @@ import SwiftyJSON
 class MoviesListVM: ObservableObject {
     @Published var movies: [Movie] = []
     @Published var isLoadingNextPage = false
+    @Published var error: AppError?
     private var currentPage = 1
     private var hasMorePages = true
     
@@ -24,11 +25,19 @@ class MoviesListVM: ObservableObject {
         
         guard hasMorePages, !isLoadingNextPage else { return }
         isLoadingNextPage = true
+        error = nil
         
         do {
             let moviesJSON = try await APIs.shared.getLatestMovies(page: currentPage)
             guard let moviesArray = moviesJSON["results"].array,
-                  let totalPages = moviesJSON["total_pages"].int else { return }
+                  let totalPages = moviesJSON["total_pages"].int else {
+                error = AppError(
+                    message: "Something went wrong while fetching movies.",
+                    failureReason: "Invalid data format",
+                    statusCode: 125
+                )
+                return
+            }
             
             let validMovies = moviesArray.compactMap { movieJSON -> Movie? in
                 guard let id = movieJSON["id"].int,
@@ -64,8 +73,17 @@ class MoviesListVM: ObservableObject {
             currentPage += 1
             hasMorePages = currentPage <= totalPages
             
+        } catch let error as AppError {
+            self.error = error
+            if resetPages {
+                self.movies = []
+            }
         } catch {
-            print("Error fetching movies: \(error)")
+            self.error = AppError(
+                message: "Something bad happened.",
+                failureReason: error.localizedDescription,
+                statusCode: 126
+            )
             if resetPages {
                 self.movies = []
             }

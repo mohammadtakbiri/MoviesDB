@@ -25,7 +25,7 @@ struct MovieDatabaseApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MovieListsView()
         }
         .modelContainer(sharedModelContainer)
     }
